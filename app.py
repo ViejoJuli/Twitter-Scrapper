@@ -1,19 +1,32 @@
-import base64
-import hashlib
-from os import environ as env
-from dotenv import load_dotenv
-import re
-import requests
 import tweepy
+import configparser
 
-from requests_oauthlib import OAuth2Session
-from flask import Flask, request, redirect, session, url_for, render_template
+config = configparser.ConfigParser()
 
-load_dotenv()
+config.read('config.ini')
 
-print('API_KEY:  {}'.format(env['API_KEY']))
-print('HOSTNAME: {}'.format(env['HOSTNAME']))
-print('PORT:     {}'.format(env['PORT']))
+api_key = config['twitter']['api_key']
+api_key_secret = config['twitter']['api_key_secret']
 
-# app = Flask(__name__)
-# app.secret_key = os.urandom(50)
+access_token = config['twitter']['access_token']
+access_token_secret = config['twitter']['access_token_secret']
+
+# Authenticate
+auth = tweepy.OAuthHandler(api_key, api_key_secret)
+auth.set_access_token(access_token, access_token_secret)
+
+api = tweepy.API(auth)
+
+public_tweets = api.home_timeline()
+
+print(public_tweets)
+
+# # print('API_KEY:  {}'.format(env['API_KEY']))
+# # print('HOSTNAME: {}'.format(env['HOSTNAME']))
+# # print('PORT:     {}'.format(env['PORT']))
+
+# # app = Flask(__name__)
+# # app.secret_key = os.urandom(50)
+# client_id = env['CLIENT_ID']
+# client_secret = env['CLIENT_SECRET']
+# print(client_id)
